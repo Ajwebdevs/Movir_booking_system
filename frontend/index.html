@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Booking System</title>
+    <style>
+ 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #e50914;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .movie-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .movie-card {
+            width: 250px;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            color: #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .movie-card h3 {
+            margin: 10px 0;
+            color: #e50914;
+        }
+
+        .movie-card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .movie-card button {
+            background-color: #e50914;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .movie-card button:hover {
+            background-color: #f40612;
+        }
+
+        .add-movie-button, .check-booking-button {
+            background-color: #e50914;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            margin: 20px auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-movie-button:hover, .check-booking-button:hover {
+            background-color: #f40612;
+        }
+
+        .add-movie-form, .check-booking-container, .booking-container, .booking-receipt {
+            background-color: rgba(31, 31, 31, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            margin-top: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .add-movie-form input, .check-booking-container input, .booking-container select, .booking-container button {
+            margin: 12px 0;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .add-movie-form button, .booking-container button {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-movie-form button:hover, .booking-container button:hover {
+            background-color: #f40612;
+        }
+
+        .booking-receipt {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .booking-receipt h3 {
+            color: #e50914;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .success-message, .error-message {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #28a745;
+        }
+
+        .error-message {
+            color: #e50914;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Booking System</h1>
+
+        <button class="add-movie-button" onclick="toggleAddMovieForm()">Add Movie</button>
+        <button class="check-booking-button" onclick="toggleCheckBookingForm()">Check Booking</button>
+
+        <div id="add-movie-form" class="add-movie-form" style="display:none;">
+            <h3>Add a New Movie</h3>
+            <form id="movie-form">
+                <label for="movie-title">Title:</label>
+                <input type="text" id="movie-title" required>
+
+                <label for="movie-genre">Genre:</label>
+                <input type="text" id="movie-genre" required>
+
+                <label for="movie-duration">Duration (min):</label>
+                <input type="number" id="movie-duration" required>
+
+                <label for="movie-rating">Rating:</label>
+                <input type="number" id="movie-rating" min="1" max="10" required>
+
+                <label for="movie-image">Image URL:</label>
+                <input type="text" id="movie-image" required>
+
+                <label for="admin-password">Password:</label>
+                <input type="password" id="admin-password" required>
+
+                <button type="submit">Add Movie</button>
+            </form>
+            <p id="add-movie-success" class="success-message" style="display:none;"></p>
+            <p id="add-movie-error" class="error-message" style="display:none;"></p>
+        </div>
+
+        <div id="check-booking-section" class="check-booking-container" style="display:none;">
+            <h2>Check Your Booking</h2>
+            <label for="booking-id">Enter Booking ID:</label>
+            <input type="text" id="booking-id" placeholder="Enter booking ID" required>
+            <button onclick="checkBooking()">Check Booking</button>
+            <p id="booking-info" style="color: white;"></p>
+        </div>
+
+        <div id="movie-list" class="movie-container"></div>
+
+        <div id="booking-section" class="booking-container" style="display:none;">
+            <h2>Book Your Movie</h2>
+            <label for="movie-select">Select Movie:</label>
+            <select id="movie-select" required>
+                <option value="">Choose a movie</option>
+            </select>
+
+            <label for="seat-select">Select Seat:</label>
+            <select id="seat-select" required>
+                <option value="">Choose a seat</option>
+                <option value="A1">A1</option>
+                <option value="A2">A2</option>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="C1">C1</option>
+                <option value="C2">C2</option>
+            </select>
+
+            <button onclick="bookMovie()">Book Movie</button>
+
+            <p id="booking-success" class="success-message" style="display:none;"></p>
+            <p id="booking-error" class="error-message" style="display:none;"></p>
+        </div>
+
+        <div id="booking-receipt" class="booking-receipt" style="display:none;">
+            <h3>Your Booking Receipt</h3>
+            <p id="receipt-details"></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleAddMovieForm() {
+            const form = document.getElementById('add-movie-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleCheckBookingForm() {
+            const form = document.getElementById('check-booking-section');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleBookingSection() {
+            const form = document.getElementById('booking-section');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function fetchMovies() {
+            try {
+                const response = await fetch('/movies');
+                const data = await response.json();
+
+                const movieList = document.getElementById('movie-list');
+                movieList.innerHTML = '';
+
+                const movieSelect = document.getElementById('movie-select');
+                movieSelect.innerHTML = `<option value="">Choose a movie</option>`;
+
+                data.movies.forEach(movie => {
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('movie-card');
+                    movieCard.innerHTML = `
+                        <img src="${movie.image_url}" alt="${movie.title}">
+                        <h3>${movie.title}</h3>
+                        <p>Genre: ${movie.genre}</p>
+                        <p>Duration: ${movie.duration} min</p>
+                        <p>Rating: ${movie.rating}</p>
+                        <button onclick="selectMovie(${movie.id})">Select Movie & Book</button>
+                    `;
+                    movieList.appendChild(movieCard);
+
+                    const option = document.createElement('option');
+                    option.value = movie.id;
+                    option.textContent = movie.title;
+                    movieSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
+        }
+
+
+async function bookMovie() {
+  const movieId = document.getElementById('movie-select').value;
+  const seat = document.getElementById('seat-select').value;
+
+  if (!movieId || !seat) {
+    document.getElementById('booking-error').style.display = 'block';
+    document.getElementById('booking-error').textContent = 'Please select a movie and seat.';
+    return;
+  }
+
+  try {
+    const response = await fetch('/book_ticket', {
+      method: 'POST',  // Ensure the method is POST here
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer_id: 1,  // Or the logged-in customer ID
+        show_id: movieId,
+        seat_id: seat
+      })
+    });
+
+    const data = await response.json();
+    if (data.message === 'Booking is successful') {
+      document.getElementById('booking-success').style.display = 'block';
+      document.getElementById('booking-success').textContent = 'Movie booked successfully!';
+      document.getElementById('booking-receipt').style.display = 'block';
+      document.getElementById('receipt-details').textContent = `
+        Movie: ${data.movie.title}
+        Seat: ${seat}
+        Booking ID: ${data.booking_id}
+      `;
+    } else {
+      document.getElementById('booking-error').style.display = 'block';
+      document.getElementById('booking-error').textContent = 'Failed to book movie.';
+    }
+  } catch (error) {
+    console.error('Error booking movie:', error);
+  }
+}
+
+
+
+
+
+
+        async function checkBooking() {
+            const bookingId = document.getElementById('booking-id').value;
+
+            try {
+                const response = await fetch(`/check_booking/${bookingId}`);
+                const data = await response.json();
+
+                const bookingInfo = document.getElementById('booking-info');
+                const bookingReceipt = document.getElementById('booking-receipt');
+                
+                if (data.success) {
+                    bookingInfo.textContent = `Booking Found: Movie - ${data.movie.title}, Date - ${data.date}, Seat Number - ${data.seat}`;
+                    bookingReceipt.style.display = 'block';
+                    document.getElementById('receipt-details').textContent = `
+                        Movie: ${data.movie.title}
+                        Date: ${data.date}
+                        Seat: ${data.seat}
+                    `;
+                } else {
+                    bookingInfo.textContent = 'Booking not found!';
+                    bookingReceipt.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error checking booking:', error);
+            }
+        }
+
+        function selectMovie(movieId) {
+            toggleBookingSection();
+        }
+
+        window.onload = fetchMovies;
+    </script>
+</body>
+</html>
+
