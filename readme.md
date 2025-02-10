@@ -1,4 +1,4 @@
-# Movie Ticket Booking System
+# Movie Ticket Booking System -- Project for beginners 
 
 A simple web application for booking movie tickets. This application provides a frontend interface for users to browse movies, view showtimes, book seats, and check booking details. The backend is built with Node.js and Express, using SQLite for data storage.
 
